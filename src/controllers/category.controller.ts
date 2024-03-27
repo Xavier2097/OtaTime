@@ -36,7 +36,7 @@ export async function createCategory (req: Request, res: Response){
   const  newCategory: Category = req.body
   const conn = await connect()
   try {
-   await conn.query('INSERT INTO category (name_category) VALUES (?)', [newCategory.name_category]) 
+   await conn.query('INSERT INTO category (name_category,image) VALUES (?,?)', [newCategory.name_category,newCategory.image]) 
   return res.json({menssage: 'added category', newCategory})
   } catch (error) {
     return res.status(500).json({ 
@@ -50,7 +50,7 @@ export async function updateCategory(req: Request, res: Response) {
   const updateCategory: Category = req.body
   const conn = await connect()
 try {
-  const [result] = await conn.query('UPDATE category SET name_category = IFNULL(?,name_category) WHERE id_category =?', [updateCategory.name_category, id])
+  const [result] = await conn.query('UPDATE category SET name_category = IFNULL(?,name_category), image = IFNULL(?,image) WHERE id_category =?', [updateCategory.name_category,updateCategory.image, id])
   
   if((result as OkPacketParams).affectedRows === 0){
     return res.status(404).json({
