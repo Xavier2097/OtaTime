@@ -6,7 +6,7 @@ export default interface Place extends RowDataPacket{
     description: string,
     image: string,
     address: string,
-    lat: string,
-    lng: string,
+    lat: number,
+    lng: number,
     category_id: number
 }

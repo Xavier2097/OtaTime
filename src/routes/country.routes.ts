@@ -5,10 +5,15 @@ const router = Router()
 router.route('/')
   .get(getCountries)
   .post(createCountry) 
+
+
   router.route("/:paisId")
   .get(getCountry)
   .patch(updateCountry)
   .delete(deleteCountry)
+
+
+
   
 
 export default router

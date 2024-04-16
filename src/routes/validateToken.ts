@@ -7,8 +7,8 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
     if (headerToken != undefined && headerToken.startsWith('Bearer')) {
         const beaderToken = headerToken.slice(7)
         try {
-        const tokenValue = jwt.verify(beaderToken, process.env.SECRECT_KEY || 'root123')
-        console.log(tokenValue)
+        jwt.verify(beaderToken, process.env.SECRECT_KEY || 'root123')
+        // console.log(tokenValue)
         next()
         } catch (error) {
             res.status(400).json({

@@ -7,7 +7,7 @@ import Place from '../model/place'
 export async function getPlaces (_req: Request, res: Response): Promise<Response> {
     const conn = await connect()
     try {
-        const places = await conn.query('SELECT * FROM place')
+        const places = await conn.query('SELECT place.*, (SELECT AVG(rate) FROM comment WHERE place_id = place.id_place) AS average_rating FROM place')
     return res.json(places[0])
     } catch (error) {
         return res.status(400).json({ message: 'place not found' })
@@ -18,14 +18,13 @@ export  async function  getPlace (req: Request, res: Response): Promise<Response
     const id = req.params.placeId
     const conn = await connect()
     try {
-        const [rows,_fields] = await conn.query('SELECT * FROM place WHERE id_place = ?', [id])
-        if(rows instanceof Array && rows.length === 0) {
-            return res.status(404).json({
-              message: "place not found",
-            })
-          }
-        const place = (rows instanceof Array && rows[0])
-        return  res.json(place)
+        const places = await conn.query(`
+        SELECT place.*, 
+        (SELECT AVG(rate) FROM comment WHERE place_id = place.id_place) AS average_rating 
+        FROM place 
+          WHERE place.id_place = ?
+          `, [id])
+        return  res.json(places[0])
     } catch (error) {
         return res.status(500).json({ message: 'connection error'})
     }

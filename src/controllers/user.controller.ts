@@ -100,15 +100,30 @@ export async function createUser (req: Request, res: Response){
           message: "User not found",
         })
       }
-      const passUser = (rows instanceof Array && rows[0]) as { password: string, name:string }
-      const match = await bcrypt.compare(logUser.password,passUser.password);
+      
+      const passUser = (rows instanceof Array && rows[0]) as { password: string, name:string, mail:string, id_user:number, usertype_id:number, state: boolean, last_name: string }
+      const match = await bcrypt.compare(logUser.password,passUser.password)
       if(match){
-        const token = jwt.sign({id: logUser.id_user, name: passUser.name}, process.env.SECRECT_KEY || 'root123')
+        const token = jwt.sign({
+          mail: passUser.mail, 
+          name: passUser.name, 
+          last_name: passUser.last_name, 
+          user_id: passUser.id_user, 
+          usertype_id: passUser.usertype_id,
+          
+        }, process.env.SECRECT_KEY || 'root123')
+
         return res.status(200).json({
           message: "login success",
-          user: passUser.name,
+          id: passUser.id_user,
+          mail: passUser.mail,
+          user: passUser.name +" "+ passUser.last_name,
+          password: passUser.password,
+          usertype_id : passUser.usertype_id,
+          state: passUser.state,
           token: token
         })
+
       }else{
        return res.status(401).json({
          message: "login failed"
@@ -119,3 +134,28 @@ export async function createUser (req: Request, res: Response){
       return res.status(400).json({ message: 'connnect error'})
     }
   }
+
+  export async function forgotPassword (req: Request, res: Response): Promise<Response> {
+    const email = req.params.mail
+    const updateUser: User = req.body
+    const hashedPassword = await bcrypt.hash(updateUser.password,10)
+    const conn = await connect();
+    try {
+      const [rows] = await conn.query('SELECT * FROM user WHERE mail = ?', [email])
+      if(rows instanceof Array && rows.length === 0) {
+        return res.status(404).json({
+          message: 'User not found',
+        });
+      }
+  
+
+      await conn.query('UPDATE user SET password = ? WHERE mail = ?', [hashedPassword, email])
+      return res.status(200).json({
+        message: 'password changed',
+      });
+      
+    } catch (error) {
+      return res.status(400).json({ message: 'connnect error'})
+    }
+  }
+
