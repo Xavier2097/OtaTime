@@ -5,7 +5,7 @@ import routes from './services/server';
 const app = express()
 const PORT = process.env.PORT || 3000
 app.use(express.json()) // middleware que transforma req.body a un json
-
+app.use(express.urlencoded({ extended: true }))
 
 app.use(fechPlaces)
 app.use(stateUser)
