@@ -14,7 +14,7 @@ export async function getPlaces(
   const conn = await connect();
   try {
     const places = await conn.query(
-      "SELECT place.*, (SELECT AVG(rate) FROM comment WHERE place_id = place.id_place) AS average_rating FROM place"
+      "SELECT place.*, (SELECT AVG(rate) FROM comment WHERE place_id = place.id_place) AS average_rating FROM place ORDER BY place.name_place ASC"
     );
     return res.json(places[0]);
   } catch (error) {
@@ -43,8 +43,8 @@ export async function getPlace(req: Request, res: Response): Promise<Response> {
 export async function createPlace(req: Request, res: Response) {
   
   const newPlace: Place = req.body;
-  const routeImage = req.params.fullPath
-  console.log("🚀 ~ createPlace ~ routeImage:", routeImage)
+  // const routeImage = req.params.fullPath
+  // console.log("🚀 ~ createPlace ~ routeImage:", routeImage)
   const conn = await connect();
   try {
     await conn.query(
@@ -52,7 +52,7 @@ export async function createPlace(req: Request, res: Response) {
       [
         newPlace.name_place,
         newPlace.description,
-        routeImage,
+        newPlace.image,
         newPlace.address,
         newPlace.lat,
         newPlace.lng,
@@ -62,7 +62,6 @@ export async function createPlace(req: Request, res: Response) {
    
     return res.json({
       menssage: "place added",
-      imagePath: routeImage,
     });
   } catch (error) {
     return res.status(500).json({
@@ -128,18 +127,14 @@ export async function updatePlace(req: Request, res: Response) {
   }
 }
 
-export async function deletePlace(req: Request, res: Response) {
+export async function deletePlace(req: Request, res: Response) : Promise<Response>{
   const id = req.params.placeId;
   const conn = await connect();
   try {
-    const [result] = await conn.query("DELETE FROM place WHERE id_place =?", [
-      id,
-    ]);
-    if ((result as OkPacketParams).affectedRows === 0) {
-      return res.status(404).json({
-        message: "place not found",
-      });
-    }
+    await conn.query(
+      `DELETE FROM place WHERE place.id_place = ?`,
+      [id]
+    );
     return res.json({
       message: "place deleted",
     });

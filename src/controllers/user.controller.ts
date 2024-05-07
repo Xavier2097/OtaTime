@@ -266,3 +266,26 @@ export async function createUser (req: Request, res: Response){
     return res.status(500).json({ message: 'Error interno del servidor' });
   }
 }
+
+
+export async function updateStateUser(req: Request, res: Response) {
+  const id = req.params.userId
+  const updateUser: User = req.body
+  const conn = await connect()
+try {
+  const result = await conn.query(
+      'UPDATE user SET name = IFNULL(?,name), last_name = IFNULL(?,last_name), country_id = IFNULL(?,country_id), age = IFNULL(?,age), mail = IFNULL(?,mail), usertype_id = IFNULL(?,usertype_id), state = IFNULL(?,state) WHERE id_user =?', 
+      [updateUser.name, updateUser.last_name, updateUser.country_id, updateUser.age, updateUser.mail, updateUser.usertype_id, updateUser.state, id])
+  
+  if((result as OkPacketParams).affectedRows === 0){
+    return res.status(404).json({
+      message: 'user not found',
+    })
+  }
+  const user = await conn.query('SELECT * FROM user WHERE id_user = ?', [id])
+  return res.json(user[0])
+} catch (error) {
+  return res.status(500).json({ 
+    message: 'connection error'
+})}
+}

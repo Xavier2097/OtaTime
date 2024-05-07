@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { createUser, deleteUser, forgotPassword, getUser, getUsers, loginUser, updatePassword, updateUser } from '../controllers/user.controller'
+import { createUser, deleteUser, forgotPassword, getUser, getUsers, loginUser, updatePassword, updateStateUser, updateUser } from '../controllers/user.controller'
 import { changePassword } from '../mailer/change-password'
 
 const router = Router()
@@ -25,5 +25,8 @@ router.route('/:userId')
   .get(getUser)
   .patch(updateUser)
   .delete(deleteUser)
+  
+  router.route('/userState/:userId')
+  .patch(updateStateUser)
 
   export default router

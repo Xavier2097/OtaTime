@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { createPlace, deletePlace, getPlace, getPlaces, updatePlace, uploadImage } from '../controllers/place.controller'
-import { uploadImageAndCreatePlace } from '../controllers/multer.controller'
+import { updatePlaceMulter, uploadImageAndCreatePlace } from '../controllers/multer.controller'
 
 
 
@@ -8,7 +8,7 @@ const router = Router()
 
 router.route('/')
     .get(getPlaces)
-    .post(uploadImage, createPlace)
+    .post(createPlace)
 
 router.route('/:placeId')
     .get(getPlace)
@@ -21,6 +21,7 @@ router.route('/uploadImg')
 router.route('/uploadImage')
     .post(uploadImageAndCreatePlace)
 
-
+router.route('/updatePlace/:placeId')
+    .patch(updatePlaceMulter)
 
 export default router

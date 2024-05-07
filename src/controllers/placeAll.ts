@@ -77,16 +77,16 @@ export async function getCommentPlaces(
     u.last_name AS user_last_name,
     p.name_place,
     p.id_place
-FROM 
+    FROM 
     comment c
-JOIN 
+    JOIN 
     user u ON c.user_id = u.id_user
-JOIN 
+    JOIN 
     place p ON c.place_id = p.id_place
-WHERE 
+    WHERE 
     p.id_place = ?
-            ORDER BY c.date DESC
-            LIMIT ? OFFSET ?;`;
+    ORDER BY c.date DESC
+    LIMIT ? OFFSET ?;`;
     const commentPlaces = await conn.query(query, [id, limit, offset]);
     return res.json(commentPlaces[0]);
   } catch (error) {
@@ -105,7 +105,7 @@ export async function getAllCommentPlaces(
     const offset = (page - 1) * limit;
 
     const query = `
-        SELECT DISTINCT p.id_place, p.name_place, p.description, p.image, p.address, p.lat, p.lng
+        SELECT DISTINCT p.id_place, p.name_place, p.description, p.image, p.address, p.lat, p.lng, p.category_id
         FROM place p
         INNER JOIN comment c ON p.id_place = c.place_id
         LIMIT ? OFFSET ?;`;
