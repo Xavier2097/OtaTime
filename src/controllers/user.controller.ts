@@ -205,7 +205,7 @@ export async function createUser (req: Request, res: Response){
         <body>
             <h1>Actualización de Contraseña</h1>
             <p>Por favor, haz clic en el siguiente enlace para cambiar tu contraseña:</p>
-            <a href="http://localhost:3000/api/user/change-password/${email}">Cambiar Contraseña</a>
+            <a href="https://otatime-production-c141.up.railway.app/api/user/change-password/${email}">Cambiar Contraseña</a>
         </body>
         </html>
       `
