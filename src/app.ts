@@ -12,10 +12,10 @@ app.use(cors());
 app.use('/assets', express.static('assets'));
 
 const pool =  createPool({
-    host: 'mysqldb',
+    host: 'roundhouse.proxy.rlwy.net',
     user: 'root',
-    password: '123456',
-    port: 3306
+    password: 'ENQfcnGRikQGZTgalpAfEpYsuDDwEIES',
+    port: 59240
 })
 
 app.get('/ping', async(_req, res) => {
