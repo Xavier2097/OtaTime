@@ -5,6 +5,6 @@ export default interface Comment extends RowDataPacket{
     content: string,
     user_id: number,
     rate: number,
-    date: Date,
+    date: string,
     place_id: number,
 }
