@@ -1,12 +1,12 @@
 import { Router } from 'express'
 import { createComment, deleteComment, getComment, getComments, updateComment } from '../controllers/comment.controller'
-import validateToken from './validateToken'
+
 
 const router = Router()
 
 router.route('/')
   .get(getComments)
-  .post(validateToken,createComment)
+  .post(createComment)
 
   router.route("/:commentId")
   .get(getComment)
