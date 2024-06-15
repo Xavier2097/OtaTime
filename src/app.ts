@@ -4,6 +4,7 @@ import stateUser from './routes/allUser'
 import routes from './services/server'
 import cors from 'cors';
 import {createPool} from 'mysql2/promise'
+import { buldPDF } from './libs/pdfKits';
 
 const app = express()
 app.use(express.json())
@@ -21,6 +22,19 @@ const pool =  createPool({
 app.get('/ping', async(_req, res) => {
 const result = await pool.query("SELECT NOW()")
 res.json(result[0])
+})
+
+app.get('/generate-pdf', (_req, res) =>{
+  const stream =  res.writeHead(200,
+        {
+            'Content-Type':'application/pdf',
+            'Content-Disposition': 'attachment; filename=example.pdf'
+        }
+    )
+    
+    buldPDF(
+        (data)=> stream.write(data),
+        ()=>stream.end())
 })
 
 app.use(fechPlaces)
